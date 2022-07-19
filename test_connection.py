@@ -11,15 +11,18 @@ def test_run(iterations, plantsim):
     i = 0
     while i <= iterations:
         i+= 1
-        action = np.random.choice(["move_to_lager1","move_to_lager2","move_to_ruecklauf"])
+        active = plantsim.get_value("sync[\"isPythonActive\",1]")
+        while active == "false":
+            sleep(0.01)
+            active = plantsim.get_value("sync[\"isPythonActive\",1]")
+
+        action = np.random.choice(["move_to_lager2","move_to_ruecklauf"]) #"move_to_lager1",
         plantsim.set_value("ActionControl[\"id\",1]", i)
         plantsim.set_value("ActionControl[\"action\",1]", action)
-        value_py = plantsim.get_value("sync[\"python\",1]")
-        value_ps = plantsim.get_value("sync[\"plantsim\",1]")
-        while value_py >= value_ps:
-            sleep(0.01)
-        plantsim.set_value("sync[\"python\",1]", i)
-        sleep(0.5)
+        print(action)
+
+        plantsim.set_value("sync[\"isPythonActive\",1]", False)
+        print(i)
 
 
 # doubleclick object in PlantSim and lookup the path_context
