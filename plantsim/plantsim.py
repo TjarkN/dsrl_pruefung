@@ -23,10 +23,10 @@ class Plantsim:
             dispatch_string += f'.{version}'
 
         # Late-binding version
-        #self.plantsim = win32.Dispatch(dispatch_string)
+        self.plantsim = win32.Dispatch(dispatch_string)
 
         # Early-binding version
-        self.plantsim = win32.gencache.EnsureDispatch(dispatch_string)
+        # self.plantsim = win32.gencache.EnsureDispatch(dispatch_string)
 
         if visible:
             # Open the Plant Simulation window
