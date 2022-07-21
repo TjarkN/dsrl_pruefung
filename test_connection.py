@@ -22,6 +22,7 @@ def test_run(iterations, plantsim):
         print(action)
 
         plantsim.set_value("sync[\"isPythonActive\",1]", False)
+        plantsim.execute_simtalk('restartAgent')
         print(i)
 
 
@@ -31,16 +32,14 @@ def test_run(iterations, plantsim):
 model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
                     socket=None, visible=True)
-id = 1
-action = "move_to_ruecklauf"
-iteration = 1
-
-
 
 if not plantsim.plantsim.IsSimulationRunning():
     plantsim.start_simulation()
+
+
 
 sleep(10)
 #plantsim.quit()
 
 test_run(100, plantsim)
+
