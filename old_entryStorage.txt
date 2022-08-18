@@ -1,0 +1,60 @@
+-- leert das Lager
+var inhaltlaenge : integer
+inhaltlaenge := Lager1.inhaltsliste.xDim
+
+--print Lager1.inhaltsliste
+--print Lager1.inhaltsliste.xDim
+
+if @.Name /= ContentStorage["Storage1",1]
+	for var i := 1 to inhaltlaenge
+		if Lager1.inhaltsliste[i,1] /= VOID
+			if @.Name /= Lager1.inhaltsliste[i,1].Name
+				Lager1.inhaltsliste[i,1].umlagern(1)
+			end
+		end
+
+
+	next
+	ContentStorage["Storage1",1] := @.Name
+end
+
+if Lager1.findeFreienPlatz = VOID
+	for var i := 1 to inhaltlaenge
+		Lager1.inhaltsliste[i,1].umlagern(2)
+	next
+end
+
+=====================================
+
+-- lager 2
+
+-- @ leert das Lager
+var inhaltlaenge : integer
+inhaltlaenge := Lager2.inhaltsliste.xDim
+
+print Lager2.inhaltsliste
+print Lager2.inhaltsliste.xDim
+print @.Name
+var aktObject : string
+aktObject := @.Name
+
+if aktObject /= ContentStorage["Storage2",1]
+	for var i := 1 to inhaltlaenge
+		if Lager2.inhaltsliste[i,1] /= VOID
+			print Lager2.inhaltsliste[i,1].Name
+			print aktObject
+			if Lager2.inhaltsliste[i,1].Name /= aktObject
+				Lager2.inhaltsliste[i,1].umlagern(1)
+			end
+		end
+	next	
+end
+
+if Lager2.findeFreienPlatz = VOID --and ContentStorage["Storage2",1] = @.Name
+	for var i := 1 to inhaltlaenge
+		Lager2.inhaltsliste[i,1].umlagern(2)
+	next
+end
+
+print Lager2.inhaltsliste
+ContentStorage["Storage2",1] := aktObject

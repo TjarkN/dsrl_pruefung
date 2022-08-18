@@ -15,7 +15,7 @@ class PlantSimulationProblem(Problem):
         if actions is not None:
             self.actions = actions
         else:
-            self.actions = self.plantsim.get_object("Actions").get_columns_by_header("Name")
+            self.actions = self.plantsim.get_object("Actions").get_columns_by_header("name")
         if states is not None:
             self.states = states
         else:
@@ -89,7 +89,7 @@ class PlantSimulationProblem(Problem):
         """
         costs = 1
         if state.old_count_exit != state.count_exit:
-            costs -= 12
+            costs -= 50 # todo set back to 12 maybe
         return costs
 
     def get_all_actions(self):

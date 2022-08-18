@@ -1,3 +1,4 @@
+import random
 from time import sleep
 
 from ps_environment import Environment
@@ -16,16 +17,22 @@ def test_run(iterations, plantsim):
             sleep(0.01)
             active = plantsim.get_value("sync[\"isPythonActive\",1]")
 
-        gercount = 0
         language = plantsim.get_value("CurrentState[\"entry_language\",1]")
-        if language=="GameGer":
-            action = "move_to_lager1"
-            gercount += 1
-        else:
-            action = np.random.choice(["move_to_lager2","move_to_ruecklauf"]) #"move_to_lager1",
-            if gercount == 9:
+        p = 0.8
+        random_zahl = random.random()
+        if language =="GameGer":
+            if random_zahl < p:
                 action = "move_to_lager1"
-                gercount = 0
+            else:
+                action = "move_to_lager2"
+
+        elif language == "GameEng":
+            if random_zahl < p:
+                action = "move_to_lager2"
+            else:
+                action = "move_to_lager1"
+        else:
+            action = np.random.choice(["move_to_ruecklauf"]) #"move_to_lager1",
 
         plantsim.set_value("ActionControl[\"id\",1]", i)
         plantsim.set_value("ActionControl[\"action\",1]", action)
@@ -38,8 +45,8 @@ def test_run(iterations, plantsim):
 
 # doubleclick object in PlantSim and lookup the path_context
 # socket is the name of the socket object in PlantSim or None if not used
-model = r'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Pruefung\pruefung_git\DSRL_Pruefung.spp'
-#model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
+#model = r'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Pruefung\pruefung_git\DSRL_Pruefung.spp'
+model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
                     socket=None, visible=True)
 
