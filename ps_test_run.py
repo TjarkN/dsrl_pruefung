@@ -13,35 +13,32 @@ model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
                     socket=None, visible=False)
 
-# set max number of iterations
+# do this after successful training (ps_training.py)
 
-max_iterations = 500
-it = 0
+# test_agent#
 env = Environment(plantsim)
-agent = QLearningAgentMAS(env.problem) # Environment -> plantsimproblem -> plantsim
-performance_train = []
-q_table = None
-# training
-while it < max_iterations:
-    print(it)
+agent = QLearningAgentMAS(env.problem)
+q_table = agent.load_q_table("agents/q_table.npy")
+agent.q_table = q_table # todo not sure if this is working
+performance_test = []
+number_of_tests = 20
+it = 0
+while it < number_of_tests:
     it += 1
     t = time.time()
-    q_table, N_sa = agent.train()
+    while not env.problem.is_goal_state(env.problem):
+        action = agent.act()
+        if action is not None:
+            env.problem.act(action)
     run_time = time.time() - t
-    print(run_time)
-    # evaluation = env.problem.evaluation
-    performance_train.append(run_time) # evaluation)
+    performance_test.append(run_time)
     env.reset()
 
-# plot results
-x = np.array(performance_train)
-N = int(max_iterations/10)
+N = int(number_of_tests/10)
+x = np.array(performance_test)
 moving_average = np.convolve(x, np.ones(N)/N, mode='valid')
-plt.plot(performance_train)
+plt.plot(performance_test)
 plt.plot(moving_average)
 plt.show()
-
-# save q_table
-agent.save_q_table("agents/q_table.npy")
 
 plantsim.quit()

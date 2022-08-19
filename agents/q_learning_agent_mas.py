@@ -4,7 +4,7 @@ import numpy as np
 
 class QLearningAgentMAS(Agent):
 
-    def __init__(self, problem, q_table=None, N_sa=None, gamma=0.99, max_N_exploration=20, R_Max=500): # todo maybe change ma explo back
+    def __init__(self, problem, q_table=None, N_sa=None, gamma=0.99, max_N_exploration=0, R_Max=500): # todo maybe change ma explo back
         super().__init__(problem)
         self.actions = problem.get_all_actions()
         self.states = problem.get_all_states()
@@ -60,8 +60,10 @@ class QLearningAgentMAS(Agent):
 
             action = self.choose_GLIE_action(self.q_table[s_new], self.N_sa[s_new])
             actions[current_state.id] = action
-            if s != None:
-                print(self.states[s], action)
+            # if s != None:
+            #     print('s != None')
+            #     print(self.states[s], action)
+
             # act
             self.problem.act(action)
 
