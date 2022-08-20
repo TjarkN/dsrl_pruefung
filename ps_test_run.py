@@ -24,6 +24,7 @@ performance_test = []
 number_of_tests = 20
 it = 0
 while it < number_of_tests:
+    print(it)
     it += 1
     t = time.time()
     while not env.problem.is_goal_state(env.problem):
@@ -31,6 +32,7 @@ while it < number_of_tests:
         if action is not None:
             env.problem.act(action)
     run_time = time.time() - t
+    print(run_time)
     performance_test.append(run_time)
     env.reset()
 
