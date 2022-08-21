@@ -1,5 +1,6 @@
 from agents.agent import Agent
 import numpy as np
+from time import sleep
 
 
 class QLearningAgentMAS(Agent):
@@ -21,6 +22,12 @@ class QLearningAgentMAS(Agent):
         self.R_Max = R_Max
 
     def act(self):
+
+        active = self.problem.plantsim.get_value("sync[\"isPythonActive\",1]")
+        while not active:
+            sleep(0.01)
+            active = self.problem.plantsim.get_value("sync[\"isPythonActive\",1]")
+
         # perception
         current_state = self.problem.get_current_state()
         if self.problem.is_goal_state(current_state):
@@ -36,7 +43,14 @@ class QLearningAgentMAS(Agent):
         action = None
         actions = {}
         states = {}
+
         while True:
+            #pause python when plantsim works
+            active = self.problem.plantsim.get_value("sync[\"isPythonActive\",1]")
+            while not active:
+                sleep(0.01)
+                active = self.problem.plantsim.get_value("sync[\"isPythonActive\",1]")
+
             current_state = self.problem.get_current_state()
             r = self.problem.get_reward(current_state)
             if current_state.id in states and current_state.id in actions:
