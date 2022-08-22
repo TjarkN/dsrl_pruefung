@@ -8,18 +8,18 @@ from plantsim.plantsim import Plantsim
 
 # doubleclick object in PlantSim and lookup the path_context
 # socket is the name of the socket object in PlantSim or None if not used
-# model = 'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Github Repo\plantsim_working\MiniFlow_BE_based_MAS.spp'
-model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
+model = 'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Pruefung\pruefung_git\DSRL_Pruefung.spp'
+#model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
-                    socket=None, visible=False)
+                    socket=None, visible=True)
 
 # do this after successful training (ps_training.py)
 
 # test_agent#
 env = Environment(plantsim)
 agent = QLearningAgentMAS(env.problem)
-q_table = agent.load_q_table("agents/q_table.npy")
-agent.q_table = q_table # todo not sure if this is working
+agent.load_q_table("agents/q_table.npy")
+#agent.q_table = q_table # todo not sure if this is working
 performance_test = []
 number_of_tests = 20
 it = 0
