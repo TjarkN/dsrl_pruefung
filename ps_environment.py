@@ -89,7 +89,7 @@ class PlantSimulationProblem(Problem):
         """
         costs = 1
         if state.old_count_exit != state.count_exit: # todo get this info from content storage table
-            costs -= 50 # todo set back to 12 maybe
+            costs -= 12 # todo set back to 12 maybe
         return costs
 
     def get_all_actions(self):

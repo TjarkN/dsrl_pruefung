@@ -1,121 +1,106 @@
+from agents.agent import Agent
+import numpy as np
 import torch
 from torch.utils.data import Dataset
 
-from agents.agent import Agent
-import numpy as np
-from time import sleep
 
 
-class QLearningAgentMAS(Agent):
+class QLearningAgent(Agent):
 
-    def __init__(self, problem, q_table=None, N_sa=None, gamma=0.99, max_N_exploration=0, R_Max=500): # todo maybe change ma explo back
+    def __init__(self, problem,
+                 q_table=None,
+                 N_sa=None,
+                 gamma=0.99,
+                 max_N_exploration=100,
+                 R_Max=100,
+                 q_table_file="q_table.npy"):
         super().__init__(problem)
         self.actions = problem.get_all_actions()
         self.states = problem.get_all_states()
         if q_table is not None:
             self.q_table = q_table
         else:
-            self.q_table = np.zeros((len(self.states), (len(self.actions))))
+            self.q_table = {} # hier die tabelle ersetzt / hier haben wir nur den reinen zustand / qtable wird durch nn ersetzt
         if N_sa is not None:
             self.N_sa = N_sa
         else:
-            self.N_sa = np.zeros((len(self.states), (len(self.actions))))
+            self.N_sa = {}
         self.gamma = gamma
         self.max_N_exploration = max_N_exploration
         self.R_Max = R_Max
+        self.file = q_table_file
 
     def act(self):
-
-        active = self.problem.plantsim.get_value("sync[\"isPythonActive\",1]")
-        while not active:
-            sleep(0.01)
-            active = self.problem.plantsim.get_value("sync[\"isPythonActive\",1]")
-
         # perception
-        current_state = self.problem.get_current_state()
-        if self.problem.is_goal_state(current_state):
-            print(self.problem.plantsim.get_value("sync[\"simulation_time\",1]"))
-            return None
-        s = self.states.index(current_state.to_state())
+        s = self.problem.get_current_state().to_state()
         # lookup in q_table
         action = self.actions[np.argmax(self.q_table[s])]
         return action
 
     def train(self):
-        # states and action are valid only for an autonomous agent with a certain "id"
-        # thus states und actions are saved in dictionaries with the id as key
         action = None
-        actions = {}
-        states = {}
-
+        s_new = None
         while True:
-            #pause python when plantsim works
-            active = self.problem.plantsim.get_value("sync[\"isPythonActive\",1]")
-            while not active:
-                sleep(0.01)
-                active = self.problem.plantsim.get_value("sync[\"isPythonActive\",1]")
-
             current_state = self.problem.get_current_state()
             r = self.problem.get_reward(current_state)
-            if current_state.id in states and current_state.id in actions:
-                s = states[current_state.id]
-                action = actions[current_state.id]
-            else:
-                s = None
-                action = None
-            s_new = self.states.index(current_state.to_state())
-            states[current_state.id] = s_new
+            s = s_new
+            s_new = current_state.to_state()
+            if s_new not in self.N_sa.keys():
+                self.N_sa[s_new] = np.zeros(len(self.actions))
+                self.q_table[s_new] = np.zeros(len(self.actions))
             if action is not None:
                 a = self.actions.index(action)
-                self.N_sa[s, a] += 1
-                self.q_table[s, a] = self.q_table[s, a] + self.alpha(s, a) * (r + self.gamma * np.max(self.q_table[s_new]) - self.q_table[s, a])
+                self.N_sa[s][a] += 1
+                self.update_q_values(s, a, r, s_new, self.problem.is_goal_state(current_state)) # bei der aufgabe soll wert mit berechnet werden
             if self.problem.is_goal_state(current_state):
-                print("Simulation Time: " + str(self.problem.plantsim.get_value("sync[\"simulation_time\",1]")))
                 return self.q_table, self.N_sa
-
             action = self.choose_GLIE_action(self.q_table[s_new], self.N_sa[s_new])
-            actions[current_state.id] = action
-
             # act
             self.problem.act(action)
+
+    # muss überschrieben werden / durch NN (?)
+    def update_q_values(self, s, a, r, s_new, is_goal_state):
+        #hier remember aufrufen
+        if is_goal_state:
+            self.q_table[s][a] = self.q_table[s][a] + self.alpha(s, a) * (r-self.q_table[s][a])
+        else:
+            self.q_table[s][a] = self.q_table[s][a] + self.alpha(s, a) * (r + self.gamma * np.max(self.q_table[s_new]) -
+                                                                      self.q_table[s][a])
 
     def choose_GLIE_action(self, q_values, N_s):
         exploration_values = np.ones_like(q_values) * self.R_Max
         # which state/action pairs have been visited sufficiently
         no_sufficient_exploration = N_s < self.max_N_exploration
         # turn cost to a positive number
-        q_values_pos = (self.R_Max / 2 + q_values)
+        q_values_pos = self.R_Max / 2 + q_values
         # select the relevant values (q or max value)
         max_values = np.maximum(exploration_values * no_sufficient_exploration, q_values_pos)
-        # assure that we do not divide by zero
-
+        # assure that we do not dived by zero
         if max_values.sum() == 0:
-            probabilities = np.ones_like(max_values)
+            probabilities = np.ones_like(max_values) / max_values.size
         else:
-            probabilities = np.copy(max_values)
-        # set not possible actions to zero
-
-        # norming
-        probabilities = probabilities / probabilities.sum()
+            probabilities = max_values / max_values.sum()
         # select action according to the (q) values
-        if np.sum(no_sufficient_exploration) > 0:
+        if np.random.random() < (self.max_N_exploration+0.00001)/(np.max(N_s)+0.00001):
             action = np.random.choice(self.actions, p=probabilities)
         else:
-            action = self.actions[np.argmax(probabilities)]
+            action_indexes = np.argwhere(probabilities == np.amax(probabilities))
+            action_indexes.shape = (action_indexes.shape[0])
+            action_index = np.random.choice(action_indexes)
+            action = self.actions[action_index]
         return action
 
-    def save_q_table(self, file):
-        np.save(file, self.q_table)
+    def save_q_table(self):
+        np.save(self.file, self.q_table)
 
-    def load_q_table(self, file):
-        self.q_table = np.load(file)
+    def load_q_table(self):
+        self.q_table = np.load(self.file)
 
     def alpha(self, s, a):
-        # learning rate alpha decreases with N_sa for convergence
-        alpha = self.N_sa[s, a] ** (-1 / 2)
+        # learnrate alpha decreases with N_sa for convergence
+        alpha = self.N_sa[s][a]**(-1/2)
         return alpha
 
-# copied from q_learning_agent
 class ExperienceReplay(Dataset):
     def __init__(self, model,m_memory=100, gamma=0.99,
                  transform=None, target_transform=None):
@@ -179,3 +164,8 @@ class ExperienceReplay(Dataset):
         label = torch.from_numpy(label).float().to(device)
 
         return features, label
+
+
+
+
+
