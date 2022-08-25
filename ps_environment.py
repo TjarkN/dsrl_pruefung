@@ -26,6 +26,7 @@ class PlantSimulationProblem(Problem):
                     self.states[header] = states.get_columns_by_header(header)
                     # removing empty cells
                     self.states[header] = list(filter(None, self.states[header]))
+        self.old_state = None
         self.state = None
         self.count_exit = 0
         self.old_count_exit = 0
@@ -67,6 +68,7 @@ class PlantSimulationProblem(Problem):
         returns the current state of the plantsim-model
         """
         if self.next_event:
+            self.old_state = self.state
             self.state = []
             #states = self.plantsim.get_next_message()
             current_state = self.plantsim.get_current_state()
@@ -89,7 +91,14 @@ class PlantSimulationProblem(Problem):
         """
         costs = 1
         if state.old_count_exit != state.count_exit: # todo get this info from content storage table
-            costs -= 12 # todo set back to 12 maybe
+            # if something
+            costs -= 50 # todo set back to 12 maybe
+        elif state.old_state != None:
+            # after the first step there is an old state
+            # if nothing was put into the exit
+            # compare content of the storages
+            if state.old_state[1] != state.state[1] or state.old_state[2] != state.state[2]:
+                costs += 10
         return costs
 
     def get_all_actions(self):
