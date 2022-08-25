@@ -23,7 +23,7 @@ if not plantsim.plantsim.IsSimulationRunning():
 
 # set max number of iterations
 
-max_iterations = 100
+max_iterations = 500
 it = 0
 env = Environment(plantsim)
 agent = QLearningAgentMAS(env.problem, max_N_exploration=0.1) # Environment -> plantsimproblem -> plantsim
@@ -49,6 +49,7 @@ while it < max_iterations:
         print(f"Q-Table:\n{q_table}")
     print(f"Runtime Python: {run_time}")
     evaluation = env.problem.evaluation
+    print(f"Simulation Time: {evaluation}")
     performance_train.append(evaluation) # evaluation)
     env.reset()
 

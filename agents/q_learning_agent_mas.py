@@ -34,7 +34,6 @@ class QLearningAgentMAS(Agent):
         # perception
         current_state = self.problem.get_current_state()
         if self.problem.is_goal_state(current_state):
-            print(self.problem.plantsim.get_value("sync[\"simulation_time\",1]"))
             return None
         s = self.states.index(current_state.to_state())
         # lookup in q_table
@@ -70,7 +69,6 @@ class QLearningAgentMAS(Agent):
                 self.N_sa[s, a] += 1
                 self.q_table[s, a] = self.q_table[s, a] + self.alpha(s, a) * (r + self.gamma * np.max(self.q_table[s_new]) - self.q_table[s, a])
             if self.problem.is_goal_state(current_state):
-                print("Simulation Time: " + str(self.problem.plantsim.get_value("sync[\"simulation_time\",1]")))
                 return self.q_table, self.N_sa
 
             action = self.choose_GLIE_action(self.q_table[s_new], self.N_sa[s_new])
