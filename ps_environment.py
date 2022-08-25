@@ -7,7 +7,7 @@ class PlantSimulationProblem(Problem):
     """
     Problem for the agent
     """
-    def __init__(self, plantsim: Plantsim, states=None, actions=None, id=None, goal_state=False):
+    def __init__(self, plantsim: Plantsim, states=None, actions=None, id=None, evaluation=0, goal_state=False):
         """
         init method
         """
@@ -31,6 +31,7 @@ class PlantSimulationProblem(Problem):
         self.count_exit = 0
         self.old_count_exit = 0
         self.id = id
+        self.evaluation = evaluation
         self.goal_state = goal_state
         self.next_event = True
 
@@ -80,6 +81,8 @@ class PlantSimulationProblem(Problem):
                     self.count_exit = value
                 elif key == "goal_state":
                     self.goal_state = value
+                elif key == "simulation_time":
+                    self.evaluation = value
                 else:
                     self.state.append(value)
             self.next_event = False

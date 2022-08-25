@@ -13,7 +13,7 @@ from plantsim.plantsim import Plantsim
 #model = 'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Pruefung\pruefung_git\DSRL_Pruefung.spp'
 model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
-                    socket=None, visible=False)
+                    socket=None, visible=True)
 
 if not plantsim.plantsim.IsSimulationRunning():
     plantsim.start_simulation()
@@ -26,7 +26,8 @@ if not plantsim.plantsim.IsSimulationRunning():
 max_iterations = 100
 it = 0
 env = Environment(plantsim)
-agent = QLearningAgentMAS(env.problem) # Environment -> plantsimproblem -> plantsim
+agent = QLearningAgentMAS(env.problem, max_N_exploration=0.1) # Environment -> plantsimproblem -> plantsim
+#agent.load_q_table("agents/q_table_2208_1700_500_reward100.npy")
 #agent = DeepQLearningAgent(env.problem) # todo change current state into nummeric / integer values
 performance_train = []
 q_table = None # todo qtable ggf. weitertrainieren mit load q table
@@ -47,12 +48,12 @@ while it < max_iterations:
     if it % 100 == 0:
         print(f"Q-Table:\n{q_table}")
     print(f"Runtime Python: {run_time}")
-    # evaluation = env.problem.evaluation
-    performance_train.append(run_time) # evaluation)
+    evaluation = env.problem.evaluation
+    performance_train.append(evaluation) # evaluation)
     env.reset()
 
 # save q_table
-agent.save_q_table("agents/q_table_2308_1100_100_reward12.npy")
+agent.save_q_table("agents/q_table_2508_1100_100_newreward50.npy")
 
 # plot results
 x = np.array(performance_train)
