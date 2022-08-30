@@ -13,7 +13,7 @@ from plantsim.plantsim import Plantsim
 #model = 'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Pruefung\pruefung_git\DSRL_Pruefung.spp'
 model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
-                    socket=None, visible=True)
+                    socket=None, visible=False)
 
 if not plantsim.plantsim.IsSimulationRunning():
     plantsim.start_simulation()
@@ -54,7 +54,7 @@ while it < max_iterations:
     env.reset()
 
 # save q_table
-agent.save_q_table("agents/q_table_2508_1100_100_newreward50.npy")
+agent.save_q_table("agents/q_table_2508_1100_100_newreward50_exploration0.1.npy")
 
 # plot results
 x = np.array(performance_train)
