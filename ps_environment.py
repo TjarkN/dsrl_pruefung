@@ -95,13 +95,13 @@ class PlantSimulationProblem(Problem):
         costs = 1
         if state.old_count_exit != state.count_exit: # todo get this info from content storage table
             # if something
-            costs -= 50 # todo set back to 12 maybe
+            costs -= 25 # todo set back to 12 maybe
         elif state.old_state != None:
             # after the first step there is an old state
             # if nothing was put into the exit
             # compare content of the storages
             if state.old_state[1] != state.state[1] or state.old_state[2] != state.state[2]:
-                costs += 10
+                costs += 5
         return costs
 
     def get_all_actions(self):
