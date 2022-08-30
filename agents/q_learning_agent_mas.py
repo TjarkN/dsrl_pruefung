@@ -67,7 +67,8 @@ class QLearningAgentMAS(Agent):
             if action is not None:
                 a = self.actions.index(action)
                 self.N_sa[s, a] += 1
-                self.q_table[s, a] = self.q_table[s, a] + self.alpha(s, a) * (r + self.gamma * np.max(self.q_table[s_new]) - self.q_table[s, a])
+                self.update_q_values(s, a, r, s_new, self.problem.is_goal_state(current_state))
+                #self.q_table[s, a] = self.q_table[s, a] + self.alpha(s, a) * (r + self.gamma * np.max(self.q_table[s_new]) - self.q_table[s, a])
             if self.problem.is_goal_state(current_state):
                 return self.q_table, self.N_sa
 
@@ -77,6 +78,12 @@ class QLearningAgentMAS(Agent):
             # act
             self.problem.act(action)
 
+    def update_q_values(self, s, a, r, s_new, is_goal_state):
+        if is_goal_state:
+            self.q_table[s][a] = self.q_table[s][a] + self.alpha(s, a) * (r-self.q_table[s][a])
+        else:
+            self.q_table[s][a] = self.q_table[s][a] + self.alpha(s, a) * (r + self.gamma * np.max(self.q_table[s_new]) -
+                                                                      self.q_table[s][a])
     def choose_GLIE_action(self, q_values, N_s):
         exploration_values = np.ones_like(q_values) * self.R_Max
         # which state/action pairs have been visited sufficiently
