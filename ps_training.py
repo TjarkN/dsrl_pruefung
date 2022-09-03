@@ -10,16 +10,15 @@ from plantsim.plantsim import Plantsim
 
 # doubleclick object in PlantSim and lookup the path_context
 # socket is the name of the socket object in PlantSim or None if not used
-model = "F:\Tjark\Dokumente\FH Bielefeld\Master\SoSe2022\Diskrete Simulation und Reinforcement Learning\Pruefung\dsrl_git\DSRL_Pruefung.spp"
+#model = "F:\Tjark\Dokumente\FH Bielefeld\Master\SoSe2022\Diskrete Simulation und Reinforcement Learning\Pruefung\dsrl_git\DSRL_Pruefung.spp"
 #model = 'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Pruefung\pruefung_git\DSRL_Pruefung.spp'
-#model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
+model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
                     socket=None, visible=True)
 
 if not plantsim.plantsim.IsSimulationRunning():
     plantsim.start_simulation()
 
-# todo info exit count aus anderer tabelle holen
 # todo ausgangsmethode in der quelle, damit nicht zu viele spiele im umlauf sind
 
 # set max number of iterations
@@ -27,9 +26,11 @@ if not plantsim.plantsim.IsSimulationRunning():
 max_iterations = 100
 it = 0
 env = Environment(plantsim)
-#agent = QLearningAgentMAS(env.problem, max_N_exploration=0.05) # Environment -> plantsimproblem -> plantsim
+
+# when switching the agents also thing of changing the saving of the qtable
+agent = QLearningAgentMAS(env.problem, max_N_exploration=10) # Environment -> plantsimproblem -> plantsim
 #agent.load_q_table("agents/q_table_2208_1700_500_reward100.npy")
-agent = DeepQLearningAgent(env.problem) # todo change current state into nummeric / integer values
+#agent = DeepQLearningAgent(env.problem, max_N_exploration=10)
 performance_train = []
 q_table = None # todo qtable ggf. weitertrainieren mit load q table
 # training
@@ -49,14 +50,15 @@ while it < max_iterations:
     if it % 100 == 0:
         print(f"Q-Table:\n{q_table}")
     print(f"Runtime Python: {run_time}")
-    evaluation = env.problem.evaluation
-    print(f"Simulation Time: {evaluation}")
-    performance_train.append(evaluation) # evaluation)
+    simulation_time = env.problem.simulation_time
+    print(f"Simulation Time: {simulation_time}")
+    # todo if eval is ready print eval also?
+    performance_train.append(simulation_time) # evaluation)
     env.reset()
 
 # save q_table
 #agent.save_q_table("agents/q_table_3008_03.npy")
-agent.q_table.save_model("2022_08_30.pth")
+agent.q_table.save_model("2022_09_02_1.pth")
 
 # plot results
 x = np.array(performance_train)

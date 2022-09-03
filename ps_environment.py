@@ -32,6 +32,7 @@ class PlantSimulationProblem(Problem):
         self.old_count_exit = 0
         self.id = id
         self.evaluation = evaluation
+        self.simulation_time = None
         self.goal_state = goal_state
         self.next_event = True
 
@@ -82,6 +83,8 @@ class PlantSimulationProblem(Problem):
                 elif key == "goal_state":
                     self.goal_state = value
                 elif key == "simulation_time":
+                    self.simulation_time = value
+                elif key == "evaluation":
                     self.evaluation = value
                 else:
                     self.state.append(value)
