@@ -95,16 +95,7 @@ class PlantSimulationProblem(Problem):
         """
         returns costs of 1 if the exit count did not change, otherwise it returns a positive reward of 11
         """
-        costs = 1
-        if state.old_count_exit != state.count_exit: # todo get this info from content storage table
-            # if something
-            costs -= 19 # todo set back to 12 maybe
-        elif state.old_state != None:
-            # after the first step there is an old state
-            # if nothing was put into the exit
-            # compare content of the storages
-            if state.old_state[1] != state.state[1] or state.old_state[2] != state.state[2]:
-                costs += 2
+        costs = state.evaluation
         return costs
 
     def get_all_actions(self):

@@ -52,8 +52,9 @@ while it < max_iterations:
     print(f"Runtime Python: {run_time}")
     simulation_time = env.problem.simulation_time
     print(f"Simulation Time: {simulation_time}")
-    # todo if eval is ready print eval also?
-    performance_train.append(simulation_time) # evaluation)
+    evaluation = env.problem.evaluation
+    print(f"Evaluation: {evaluation}")
+    performance_train.append(evaluation) # todo ist das nicht nur die eval von dem aktuellen state sprich goal state?
     env.reset()
 
 # save q_table
