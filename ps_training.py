@@ -58,8 +58,8 @@ while it < max_iterations:
     env.reset()
 
 # save q_table
-#agent.save_q_table("agents/q_table_3008_03.npy")
-agent.q_table.save_model("2022_09_02_1.pth")
+agent.save_q_table("agents/q_table_0509_01.npy")
+#agent.q_table.save_model("2022_09_02_1.pth")
 
 # plot results
 x = np.array(performance_train)
