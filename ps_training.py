@@ -10,9 +10,9 @@ from plantsim.plantsim import Plantsim
 
 # doubleclick object in PlantSim and lookup the path_context
 # socket is the name of the socket object in PlantSim or None if not used
-#model = "F:\Tjark\Dokumente\FH Bielefeld\Master\SoSe2022\Diskrete Simulation und Reinforcement Learning\Pruefung\dsrl_git\DSRL_Pruefung.spp"
+model = "F:\Tjark\Dokumente\FH Bielefeld\Master\SoSe2022\Diskrete Simulation und Reinforcement Learning\Pruefung\dsrl_git\DSRL_Pruefung.spp"
 #model = 'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Pruefung\pruefung_git\DSRL_Pruefung.spp'
-model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
+#model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
                     socket=None, visible=True)
 
@@ -23,7 +23,7 @@ if not plantsim.plantsim.IsSimulationRunning():
 
 # set max number of iterations
 
-max_iterations = 100
+max_iterations = 50
 it = 0
 env = Environment(plantsim)
 
@@ -58,7 +58,7 @@ while it < max_iterations:
     env.reset()
 
 # save q_table
-agent.save_q_table("agents/q_table_0509_01.npy")
+agent.save_q_table("agents/q_table_0609_01.npy")
 #agent.q_table.save_model("2022_09_02_1.pth")
 
 # plot results

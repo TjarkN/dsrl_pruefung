@@ -8,7 +8,7 @@ from plantsim.plantsim import Plantsim
 
 # doubleclick object in PlantSim and lookup the path_context
 # socket is the name of the socket object in PlantSim or None if not used
-model = "F:\Tjark\Dokumente\FH Bielefeld\Master\SoSe2022\Diskrete Simulation und Reinforcement Learning\Pruefung\dsrl_git\DSRL_Pruefung_1000.spp"
+model = "F:\Tjark\Dokumente\FH Bielefeld\Master\SoSe2022\Diskrete Simulation und Reinforcement Learning\Pruefung\dsrl_git\DSRL_Pruefung.spp"
 #model = 'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Pruefung\pruefung_git\DSRL_Pruefung_1000.spp'
 #model = r'C:\Users\dlina\DSRL\DSRL_Pruefung_1000.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
@@ -19,7 +19,7 @@ plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.M
 # test_agent#
 env = Environment(plantsim)
 agent = QLearningAgentMAS(env.problem)
-agent.load_q_table("agents/q_table_2608_1704_100_reward12.npy")
+agent.load_q_table("agents/q_table_3008_04.npy")
 performance_test = []
 number_of_tests = 20
 it = 0
