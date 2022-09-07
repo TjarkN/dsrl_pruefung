@@ -8,9 +8,9 @@ from plantsim.plantsim import Plantsim
 
 # doubleclick object in PlantSim and lookup the path_context
 # socket is the name of the socket object in PlantSim or None if not used
-model = "F:\Tjark\Dokumente\FH Bielefeld\Master\SoSe2022\Diskrete Simulation und Reinforcement Learning\Pruefung\dsrl_git\DSRL_Pruefung.spp"
+#model = "F:\Tjark\Dokumente\FH Bielefeld\Master\SoSe2022\Diskrete Simulation und Reinforcement Learning\Pruefung\dsrl_git\DSRL_Pruefung.spp"
 #model = 'D:\Tjark\Dokumente\FH Bielefeld\Sommersemester 2022\Diskrete Simulation und Reinforceent Learning\Pruefung\pruefung_git\DSRL_Pruefung_1000.spp'
-#model = r'C:\Users\dlina\DSRL\DSRL_Pruefung_1000.spp'
+model = r'C:\Users\dlina\DSRL\DSRL_Pruefung.spp'
 plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.Modelle.Modell', model=model,
                     socket=None, visible=True)
 
@@ -19,7 +19,7 @@ plantsim = Plantsim(version='16.1', license_type='Educational', path_context='.M
 # test_agent#
 env = Environment(plantsim)
 agent = QLearningAgentMAS(env.problem)
-agent.load_q_table("agents/q_table_3008_04.npy")
+agent.load_q_table("agents/q_tables/q_table_3008_02.npy")
 performance_test = []
 number_of_tests = 20
 it = 0
@@ -32,7 +32,9 @@ while it < number_of_tests:
         if action is not None:
             env.problem.act(action)
     run_time = time.time() - t
-    print(run_time)
+    print(f"Python Runtime: {run_time}")
+    simulation_time = env.problem.simulation_time
+    print(f"Simulation Time: {simulation_time}")
     performance_test.append(run_time)
     env.reset()
 
