@@ -37,11 +37,11 @@ class DeepQTable(nn.Module):
     def __init__(self, number_of_states, number_of_actions, Optimizer, loss_fn, transform):
         super(DeepQTable, self).__init__()
         self.model = nn.Sequential(
-            nn.Linear(number_of_states, 48),
+            nn.Linear(number_of_states, 24),
             nn.ReLU(),
-            nn.Linear(48, 24),
+            nn.Linear(24, 12),
             nn.ReLU(),
-            nn.Linear(24, number_of_actions)
+            nn.Linear(12, number_of_actions)
         )
         self.device = "cpu"
         if torch.cuda.is_available():
