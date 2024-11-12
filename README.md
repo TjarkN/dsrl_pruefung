@@ -1,5 +1,5 @@
 # DSRL Pruefung Sommersemester 2022
-## Tjark Nitsche & Lina Doering
+
 ### Prüfungsabgabe in Diskrete Simulation und Reinforcement Learning
 
 Abgaberelevante Dateien:
